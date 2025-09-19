@@ -41,12 +41,52 @@ include_once 'inc/head.php';
             </script>";
         }
         ?>
+        <link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
     <style>
         .progress-ring__circle {
             transition: stroke-dashoffset 0.35s;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+         /* Dyslexia-mode styles */
+    .dyslexia-mode {
+        font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', Arial, sans-serif !important;
+        letter-spacing: 0.04em;
+        line-height: 1.75;
+        background-color: #fbfbfb;
+        color: #111827;
+    }
+
+    /* TTS button */
+    .tts-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #4f46e5;
+        color: white;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border: none;
+    }
+
+    .tts-small {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .tts-button:focus {
+        outline: 3px solid rgba(79, 70, 229, 0.25);
+    }
+
+    .progress-ring__circle {
+        transition: stroke-dashoffset 0.35s;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+    }
     </style>
 
     <div class="flex h-screen">
@@ -114,6 +154,10 @@ include_once 'inc/head.php';
 
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-6">
+                <div class="mb-6 flex gap-3">
+                        <button id="toggle-dyslexia" class="tts-button">A11y: Dyslexia Mode</button>
+                        <button id="read-page" class="tts-button">🔊 Read Page</button>
+                    </div>
 
              <form class="space-y-4" method="POST">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,6 +212,35 @@ include_once 'inc/head.php';
     document.getElementById('mobile-sidebar-backdrop').addEventListener('click', function() {
         document.getElementById('mobile-sidebar').classList.add('hidden');
     });
+
+    
+  // ===== Simple TTS function =====
+function speak(text, opts = {}) {
+    if (!('speechSynthesis' in window)) {
+        alert('Text-to-Speech not supported by this browser.');
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = opts.rate || 0.9; // slower for readability
+    utter.pitch = opts.pitch || 1;
+    utter.lang = "en-US";
+    speechSynthesis.speak(utter);
+}
+
+// ===== Read entire page =====
+document.getElementById('read-page').addEventListener('click', () => {
+    const text = document.body.innerText;
+    speak(text);
+});
+
+// ===== Dyslexia mode toggle =====
+document.getElementById('toggle-dyslexia').addEventListener('click', (e) => {
+    const enabled = document.body.classList.toggle('dyslexia-mode');
+    e.target.innerText = enabled ? 'A11y: Dyslexia Mode ✓' : 'A11y: Dyslexia Mode';
+});
+
+
 
     </script>
 </body>

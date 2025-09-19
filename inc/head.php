@@ -15,6 +15,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
     <style>
     :root {
         --primary: #4F46E5;
@@ -75,41 +76,7 @@
         margin-right: 12px;
     }
 
-    .text-to-speech-btn {
-        background-color: #4F46E5;
-        transition: all 0.3s ease;
-    }
-
-    .text-to-speech-btn:hover {
-        background-color: #4338CA;
-        transform: scale(1.1);
-    }
-
-    .dyslexia-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 100;
-        background-color: #4F46E5;
-        color: white;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
-
-    .letter-spacing-wide {
-        letter-spacing: 0.1em;
-    }
-
-    .highlight-text {
-        background-color: #FEF3C7;
-        padding: 0 2px;
-    }
+   
 
     .readable-font {
         font-size: 1.1rem;
@@ -162,5 +129,26 @@
     .task-meta svg {
         margin-right: 0.25rem;
     }
+    .dyslexia-mode {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    background-color: #fafafa;
+    color: #222;
+  }
+
+  .tts-button {
+    margin-top: 8px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    background: #4f46e5;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .tts-button:hover {
+    background: #3730a3;
+  }
     </style>
 </head>

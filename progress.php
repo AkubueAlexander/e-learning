@@ -41,7 +41,42 @@ include_once 'inc/head.php';
 ?>
 
 <body class="bg-gray-50">
+    <link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
     <style>
+    /* Dyslexia-mode styles */
+    .dyslexia-mode {
+        font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', Arial, sans-serif !important;
+        letter-spacing: 0.04em;
+        line-height: 1.75;
+        background-color: #fbfbfb;
+        color: #111827;
+    }
+
+    /* TTS button */
+    .tts-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #4f46e5;
+        color: white;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border: none;
+    }
+
+    .tts-small {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .tts-button:focus {
+        outline: 3px solid rgba(79, 70, 229, 0.25);
+    }
+
     .progress-ring__circle {
         transition: stroke-dashoffset 0.35s;
         transform: rotate(-90deg);
@@ -61,9 +96,9 @@ include_once 'inc/head.php';
                     <i data-feather="menu" class="w-6 h-6"></i>
                 </button>
                 <span class="text-xl font-bold text-gray-800 letter-spacing-wide">LearnHub</span>
-                
+
             </div>
-             <!-- Mobile sidebar (hidden by default) -->
+            <!-- Mobile sidebar (hidden by default) -->
             <div class="hidden md:hidden fixed inset-0 z-40" id="mobile-sidebar">
                 <div class="fixed inset-0 bg-gray-600 bg-opacity-75" id="mobile-sidebar-backdrop"></div>
                 <div class="relative flex flex-col w-80 max-w-xs h-full bg-white">
@@ -89,7 +124,7 @@ include_once 'inc/head.php';
                             <a href="progress" class="flex items-center sidebar-item">
                                 <i data-feather="trending-up" class="sidebar-icon"></i>
                                 <span class="text-lg">Progress</span>
-                            </a>                          
+                            </a>
                             <a href="badge" class="flex items-center sidebar-item">
                                 <i data-feather="award" class="sidebar-icon"></i>
                                 <span class="text-lg">Badges</span>
@@ -102,7 +137,7 @@ include_once 'inc/head.php';
                     </div>
                     <div class="p-4 border-t border-gray-200">
                         <div class="flex items-center">
-                           
+
                             <div class="ml-3">
                                 <p class="text-base font-bold text-gray-900"><?php echo $rowUser -> fullName ?></p>
                                 <p class="text-sm text-gray-600">Premium Member</p>
@@ -119,6 +154,11 @@ include_once 'inc/head.php';
                         <h1 class="text-2xl font-bold text-gray-900">Your Learning Progress</h1>
                         <p class="text-gray-500">Track your progress across all courses and lessons</p>
                     </div>
+                    <div class="mb-6 flex gap-3">
+                        <button id="toggle-dyslexia" class="tts-button">A11y: Dyslexia Mode</button>
+                        <button id="read-page" class="tts-button">🔊 Read Page</button>
+                    </div>
+
 
                     <!-- Stats -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -265,14 +305,16 @@ include_once 'inc/head.php';
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-2">
                                             <h3 class="text-sm font-medium text-gray-900"><?php $row -> title ?></h3>
-                                            <span class="text-sm text-gray-500"><?php echo $percentage ?>% complete</span>
+                                            <span class="text-sm text-gray-500"><?php echo $percentage ?>%
+                                                complete</span>
                                         </div>
                                         <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-indigo-600 h-2 rounded-full" style="width: <?php echo $percentage ?>%"></div>
+                                            <div class="bg-indigo-600 h-2 rounded-full"
+                                                style="width: <?php echo $percentage ?>%"></div>
                                         </div>
                                         <div class="flex justify-between mt-2 text-xs text-gray-500">
                                             <span><?php echo $lessonP ?>/<?php echo $lessonData ?> lessons</span>
-                                            
+
                                         </div>
                                     </div>
                                     <?php endforeach; ?>
@@ -309,6 +351,32 @@ include_once 'inc/head.php';
     document.getElementById('mobile-sidebar-backdrop').addEventListener('click', function() {
         document.getElementById('mobile-sidebar').classList.add('hidden');
     });
+
+  // ===== Simple TTS function =====
+function speak(text, opts = {}) {
+    if (!('speechSynthesis' in window)) {
+        alert('Text-to-Speech not supported by this browser.');
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = opts.rate || 0.9; // slower for readability
+    utter.pitch = opts.pitch || 1;
+    utter.lang = "en-US";
+    speechSynthesis.speak(utter);
+}
+
+// ===== Read entire page =====
+document.getElementById('read-page').addEventListener('click', () => {
+    const text = document.body.innerText;
+    speak(text);
+});
+
+// ===== Dyslexia mode toggle =====
+document.getElementById('toggle-dyslexia').addEventListener('click', (e) => {
+    const enabled = document.body.classList.toggle('dyslexia-mode');
+    e.target.innerText = enabled ? 'A11y: Dyslexia Mode ✓' : 'A11y: Dyslexia Mode';
+});
 
     </script>
 </body>

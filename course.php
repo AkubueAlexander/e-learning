@@ -21,6 +21,14 @@ include_once 'inc/head.php';
 ?> 
 
 <body class="bg-gray-50 h-screen overflow-hidden">
+    <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
+        <button id="toggle-dyslexia" class="px-3 py-2 bg-green-600 text-white rounded">
+            Toggle Dyslexia-Friendly Mode
+        </button>
+        <button id="read-all" class="px-3 py-2 bg-indigo-600 text-white rounded">
+            🔊 Read Page
+        </button>
+    </div>
     <style>
         :root {
             --primary: #4F46E5;
@@ -164,7 +172,7 @@ include_once 'inc/head.php';
 
                             
                         ?>
-                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="bg-white rounded-lg shadow overflow-hidden course-card">
                             <div class="h-40 <?php echo $row -> bg ?> flex items-center justify-center">
                                 <i data-feather="<?php echo $row -> icon ?>" class="text-white w-12 h-12"></i>
                             </div>
@@ -208,40 +216,54 @@ include_once 'inc/head.php';
             </div>
         </div>
     </div>
+<script>
+  feather.replace();
+  AOS.init();
 
-    <script>
-        feather.replace();
+  // Mobile menu toggle
+  document.getElementById('mobile-menu-button').addEventListener('click', function() {
+      document.getElementById('mobile-sidebar').classList.remove('hidden');
+  });
 
-        AOS.init();
+  document.getElementById('close-mobile-menu').addEventListener('click', function() {
+      document.getElementById('mobile-sidebar').classList.add('hidden');
+  });
 
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        document.getElementById('mobile-sidebar').classList.remove('hidden');
-    });
+  document.getElementById('mobile-sidebar-backdrop').addEventListener('click', function() {
+      document.getElementById('mobile-sidebar').classList.add('hidden');
+  });
 
-    document.getElementById('close-mobile-menu').addEventListener('click', function() {
-        document.getElementById('mobile-sidebar').classList.add('hidden');
-    });
+  // Toggle dyslexia-friendly mode
+  document.getElementById('toggle-dyslexia').addEventListener('click', () => {
+      document.body.classList.toggle('dyslexia-mode');
+  });
 
-    document.getElementById('mobile-sidebar-backdrop').addEventListener('click', function() {
-        document.getElementById('mobile-sidebar').classList.add('hidden');
-    });
+  // Speak function
+  function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;   // speed
+      utterance.pitch = 1;  // natural tone
+      speechSynthesis.cancel(); // cancel any previous
+      speechSynthesis.speak(utterance);
+  }
 
-        
-        // Tab functionality
-        document.querySelectorAll('.course-tab').forEach(tab => {
-            tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('active', 'text-indigo-600', 'border-indigo-500'));
-                this.classList.add('active', 'text-indigo-600', 'border-indigo-500');
-                this.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            });
-        });
+  // Read entire page
+  document.getElementById('read-all').addEventListener('click', () => {
+      let text = document.body.innerText;
+      speak(text);
+  });
 
-        // Mobile menu toggle
-        document.querySelector('[data-feather="menu"]').addEventListener('click', function() {
-            console.log('Mobile menu clicked');
-        });
-    </script>
+  // Add "🔊 Read Course" buttons to each course card
+  document.querySelectorAll('.course-card').forEach((card) => {
+      let btn = document.createElement('button');
+      btn.innerText = "🔊 Read Course";
+      btn.className = "tts-button";
+      btn.onclick = () => {
+          let text = card.innerText;
+          speak(text);
+      };
+      card.querySelector('.p-6').appendChild(btn);
+  });
+</script>
 </body>
 </html>

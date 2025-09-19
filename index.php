@@ -38,6 +38,15 @@ include_once 'inc/head.php';
 ?>
 
 <body class="bg-gray-50">
+    <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
+        <button id="toggle-dyslexia" class="px-3 py-2 bg-green-600 text-white rounded">
+            Toggle Dyslexia-Friendly Mode
+        </button>
+        <button id="read-all" class="px-3 py-2 bg-indigo-600 text-white rounded">
+            🔊 Read Page
+        </button>
+    </div>
+
     <div class="flex h-screen overflow-hidden">
         <?php include_once 'inc/sidebar.php'; ?>
 
@@ -49,7 +58,7 @@ include_once 'inc/head.php';
                     <i data-feather="menu" class="w-6 h-6"></i>
                 </button>
                 <span class="text-xl font-bold text-gray-800 letter-spacing-wide">LearnHub</span>
-                
+
             </div>
 
             <!-- Mobile sidebar (hidden by default) -->
@@ -78,7 +87,7 @@ include_once 'inc/head.php';
                             <a href="progress" class="flex items-center sidebar-item">
                                 <i data-feather="trending-up" class="sidebar-icon"></i>
                                 <span class="text-lg">Progress</span>
-                            </a>                          
+                            </a>
                             <a href="badge" class="flex items-center sidebar-item">
                                 <i data-feather="award" class="sidebar-icon"></i>
                                 <span class="text-lg">Badges</span>
@@ -91,7 +100,7 @@ include_once 'inc/head.php';
                     </div>
                     <div class="p-4 border-t border-gray-200">
                         <div class="flex items-center">
-                           
+
                             <div class="ml-3">
                                 <p class="text-base font-bold text-gray-900"><?php echo $rowUser -> fullName ?></p>
                                 <p class="text-sm text-gray-600">Premium Member</p>
@@ -215,13 +224,14 @@ include_once 'inc/head.php';
 
                             
                         ?>
-                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="bg-white rounded-lg shadow overflow-hidden course-card">
                             <div class="h-40 <?php echo $row -> bg ?> flex items-center justify-center">
                                 <i data-feather="<?php echo $row -> icon ?>" class="text-white w-12 h-12"></i>
                             </div>
                             <div class="p-6">
                                 <div class="flex justify-between items-start">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2"><?php echo $row -> title ?>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                        <?php echo $row -> title ?>
                                     </h3>
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -245,12 +255,14 @@ include_once 'inc/head.php';
                                             style="width: <?php echo $percentage ?>%"></div>
                                     </div>
                                 </div>
-                                <button onclick="window.location.href='course-detail?title=<?php echo $row -> title ?>';"
+                                <button
+                                    onclick="window.location.href='course-detail?title=<?php echo $row -> title ?>';"
                                     class="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Continue Learning
                                 </button>
                             </div>
                         </div>
+
                         <?php endforeach; ?>
 
 
@@ -262,7 +274,7 @@ include_once 'inc/head.php';
         </div>
     </div>
 
-   
+
 
     <script>
     feather.replace();
@@ -281,9 +293,38 @@ include_once 'inc/head.php';
         document.getElementById('mobile-sidebar').classList.add('hidden');
     });
 
- 
+    // Toggle dyslexia-friendly mode
+    document.getElementById('toggle-dyslexia').addEventListener('click', () => {
+        document.body.classList.toggle('dyslexia-mode');
+    });
 
-   
+    // Text-to-Speech function
+    function speak(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1; // normal speed
+        utterance.pitch = 1; // natural tone
+        speechSynthesis.speak(utterance);
+    }
+
+    // Read entire page content
+    document.getElementById('read-all').addEventListener('click', () => {
+        let text = document.body.innerText;
+        speechSynthesis.cancel(); // stop any previous speech
+        speak(text);
+    });
+
+    // Add TTS buttons for each course card dynamically
+    document.querySelectorAll('.course-card').forEach((card, index) => {
+        let btn = document.createElement('button');
+        btn.innerText = "🔊 Read Course";
+        btn.className = "tts-button";
+        btn.onclick = () => {
+            let text = card.innerText;
+            speechSynthesis.cancel();
+            speak(text);
+        };
+        card.querySelector('.p-6').appendChild(btn);
+    });
     </script>
 </body>
 
